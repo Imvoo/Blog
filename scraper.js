@@ -8,6 +8,7 @@ var cheerio = require('cheerio'),
 
 var url = "http://osu.ppy.sh/pages/include/profile-history.php?u=949789&m=0";
 var scoreRegex = /\d*,?\d*,?\d* \(\w*\) \w+,?\w*,?\w*,?\w*,?\w*/g;
+var scores;
 
 mongoose.connect(databaseURL);
 var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String });
