@@ -9,11 +9,16 @@ var cheerio = require('cheerio'),
 	moment = require('moment');
 
 var url = "http://osu.ppy.sh/pages/include/profile-history.php?u=949789&m=0";
-var scoreRegex = /\d*,?\d*,?\d* \(\w*\) \w+,?\w*,?\w*,?\w*,?\w*/g;
+var allScoresRegex = /(\d*,?){0,4} \(\w*\) (\w*,?){0,5}/g;
+var allScores;
+var scoresRegex = /^(\d*,?){0,4}/;
 var scores;
+var ranksRegex = /\w*(?=\))/;
+var ranks;
+var mods;
 
 mongoose.connect(databaseURL);
-var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String });
+var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String, rank: String, songMods: String });
 
 async.series([
 	function(callback)
@@ -49,12 +54,18 @@ async.series([
 						var difficulty = nextTag.substr(nextTag.indexOf('[') + 1, nextTag.length - nextTag.indexOf('[') - 2);
 						var link = "http://osu.ppy.sh" + this.next().attr('href');
 
-						scores = scoreRegex.exec(html);
+						allScores = allScoresRegex.exec(html);
+						scores = scoresRegex.exec(allScores);
+						ranks = ranksRegex.exec(allScores);
+						mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
+
 						console.log(date + " " + name);
 						console.log(link);
-						console.log(scores[0] + " " + difficulty);
+						console.log(allScores[0] + " " + difficulty);
+						console.log(ranks[0]);
+						console.log(mods);
 
-						var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0] });
+						var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
 						newSong.save(function (err) 
 						{
 							count++;
