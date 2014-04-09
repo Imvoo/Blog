@@ -1,5 +1,9 @@
-// htmlParser Test
-var databaseURL = "mongodb://Imvoo:Imvoo@oceanic.mongohq.com:10035/imvoo_database";
+// This is the URL for MongoHQ.
+// var databaseURL = "mongodb://Imvoo:Imvoo@oceanic.mongohq.com:10035/imvoo_database";
+
+// This is the URL for MongoLAB.
+var databaseURL = "mongodb://Imvoo:imvoo@ds049467.mongolab.com:49467/imvoo";
+
 var collection = 'listings';
 
 var cheerio = require('cheerio'),
