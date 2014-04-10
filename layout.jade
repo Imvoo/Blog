@@ -1,0 +1,26 @@
+doctype html
+html
+	head
+		title Osu Scraper - Imvoo
+	body
+		header
+			block topBar
+		middle
+			table(width="80%" border="1px solid black" style="border-collapse: collapse" align="center")
+				caption Osu Scores
+				thead
+					tr
+						th Song Name
+						th Song Difficulty
+						th Score
+						th Rank
+						th Mods
+				each val in listings
+					tr
+						td(style="padding: 2px")
+							a(href=val.songLink)= val.songName
+						td= val.songDifficulty
+						td= val.score
+						td(align="center")= val.rank
+						td= val.songMods
+ 
