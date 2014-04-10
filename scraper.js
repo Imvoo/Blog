@@ -27,16 +27,19 @@ var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, s
 async.series([
 	function(callback)
 	{
+		console.log("Starting recording function!"); // DEBUG
 		request(url, function (error, response, html) 
 		{
 			var count = 0;
 			if (!error && response.statusCode == 200) 
 			{
+				console.log("Found page to record!"); // DEBUG
 				Listing.findOne({}).sort("-datePlayed").exec(function(err, result) {
 					if (result != null)
 						console.log(result.datePlayed + " " + result.songName);
 
 					var $ = cheerio.load(html);
+					console.log("Loaded HTML with Cheerio!"); // DEBUG
 
 					if ($('time.timeago').length == 0)
 					{
@@ -69,11 +72,7 @@ async.series([
 						ranks = ranksRegex.exec(allScores);
 						mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
 
-						console.log(date + " " + name);
-						console.log(link);
-						console.log(allScores[0] + " " + difficulty);
-						console.log(ranks[0]);
-						console.log(mods);
+						console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
 
 						var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
 						newSong.save(function (err) 
