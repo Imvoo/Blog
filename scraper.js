@@ -38,6 +38,12 @@ async.series([
 
 					var $ = cheerio.load(html);
 
+					if ($('time.timeago').length == 0)
+					{
+						console.log("No songs to record!");
+						callback();
+					}
+
 					$('time.timeago').each(function(i, element) 
 					{
 						var date = this.text();
