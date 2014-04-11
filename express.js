@@ -4,6 +4,7 @@ var express = require('express'),
 var app = express();
 app.set('view engine', 'jade');
 app.set('views', __dirname);
+app.use(express.static(__dirname));
 
 var databaseURL = "mongodb://Imvoo:imvoo@ds049467.mongolab.com:49467/imvoo";
 var collection = "listings";

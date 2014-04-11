@@ -1,0 +1,46 @@
+.header {
+	background-color: #213123;
+	height: 20px;
+}
+
+th {
+	font-family: Open Sans;
+	font-weight: 700;
+}
+
+td {
+	padding: 5px;
+	text-align: center;
+	font-family: Open Sans;
+	font-weight: 400;
+	font-size: 11px;
+}
+
+table {
+	width: 80%;
+	border-collapse: collapse;
+	margin: auto;
+}
+
+table, td, th {
+	border: 1px solid #bdc3c7;
+}
+
+.hero {
+	background-color: #2980b9;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	text-align: center;
+	color: white;
+	margin-bottom: 20px;
+}
+
+body {
+	margin: 0;
+}
+
+h1 {
+	font-family: Open Sans;
+	font-weight: 700;
+	font-size: 20;
+}
