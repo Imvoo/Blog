@@ -1,3 +1,25 @@
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+#holder {
+	min-height: 100%;
+	position: relative;
+}
+
+#body {
+	padding-bottom: 50px;
+}
+
+footer {
+    height: 25px; 
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0; 
+}
+
 th {
 	font-family: Open Sans;
 	font-weight: 700;
@@ -12,7 +34,7 @@ td {
 }
 
 table {
-	width: 80%;
+	min-width: 80%;
 	border-collapse: collapse;
 	margin: auto;
 }
@@ -23,19 +45,40 @@ table, td, th {
 
 .hero {
 	background-color: #2980b9;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	padding-top: 20px;
+	padding-bottom: 20px;
 	text-align: center;
 	color: white;
-	margin-bottom: 20px;
 }
 
-body {
-	margin: 0;
+.closingHero {
+	background-color: #333333;
+	text-align: right;
+	padding-right: 10px;
+	color: white;
+	height: 25px;
+}
+
+.gap {
+	padding-bottom: 20px;
+}
+
+.heroClose {
+	background-color: #262626;
 }
 
 h1 {
 	font-family: Open Sans;
 	font-weight: 700;
 	font-size: 20;
+	margin: 0;
+	padding: 0;
+}
+
+h4 {
+	font-family: Open Sans;
+	font-weight: 700;
+	font-size: 11;
+	margin: 0;
+	padding: 0;
 }
