@@ -26,7 +26,6 @@ console.log("Server has started on port: " + port + "!");
 
 process.on('SIGTERM', function () {
 	scraper.disconnect();
-  	app.close();
 });
 
 var job = new CronJob('5 * * * * *', function() {
