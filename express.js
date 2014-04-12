@@ -11,7 +11,7 @@ var collection = "listings";
 mongoose.connect(databaseURL);
 var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String, rank: String, songMods: String });
 
-var port = 5000;
+var port = Number(process.env.PORT || 5000);
 
 app.get('/', function(req, res) 
 {
