@@ -35,13 +35,13 @@ exports.update = function() {
 	async.series([
 		function(callback)
 		{
-			console.log("Starting recording function!"); // DEBUG
+			// console.log("Starting recording function!"); // DEBUG
 			request(url, function (error, response, html) 
 			{
 				var count = 0;
 				if (!error && response.statusCode == 200) 
 				{
-					console.log("Found page to record!"); // DEBUG
+					// console.log("Found page to record!"); // DEBUG
 					Listing.findOne({}).sort("-datePlayed").exec(function(err, result) {
 						if (err)
 						{
@@ -50,14 +50,14 @@ exports.update = function() {
 						}
 
 						if (result != null)
-							console.log(result.datePlayed + " " + result.songName);
+							// console.log(result.datePlayed + " " + result.songName);
 
 						var $ = cheerio.load(html);
-						console.log("Loaded HTML with Cheerio!"); // DEBUG
+						// console.log("Loaded HTML with Cheerio!"); // DEBUG
 
 						if ($('time.timeago').length == 0)
 						{
-							console.log("No songs to record!");
+							// console.log("No songs to record!");
 							callback();
 						}
 
@@ -67,8 +67,8 @@ exports.update = function() {
 							if (result != null && (moment(date).isBefore(result.datePlayed) || moment(date).isSame(result.datePlayed)))
 							{
 								count++;
-								console.log("Already recorded, skipping!");
-								console.log(moment(date).diff(result.datePlayed));
+								// console.log("Already recorded, skipping!");
+								// console.log(moment(date).diff(result.datePlayed));
 
 								if ($('time.timeago').length == count)
 									callback();
@@ -86,7 +86,7 @@ exports.update = function() {
 							ranks = ranksRegex.exec(allScores);
 							mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
 
-							console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
+							// console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
 
 							var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
 							newSong.save(function (err) 
@@ -95,7 +95,7 @@ exports.update = function() {
 								if (err)
 									console.log("Error in saving!");
 								else
-									console.log("Saved entry!");
+									// console.log("Saved entry!");
 
 								if ($('time.timeago').length == count)
 									callback();
@@ -108,7 +108,7 @@ exports.update = function() {
 
 		function(callback)
 		{
-			console.log("Finished recording entries!");
+			// console.log("Finished recording entries!");
 			callback();
 		}
 	])
