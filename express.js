@@ -6,22 +6,29 @@ app.set('view engine', 'jade');
 app.set('views', __dirname + '/public/jade');
 app.use(express.static(__dirname + '/public'));
 
-var databaseURL = "mongodb://Imvoo:imvoo@ds049467.mongolab.com:49467/imvoo";
-var collection = "listings";
-mongoose.connect(databaseURL);
-var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String, rank: String, songMods: String });
-
 var port = Number(process.env.PORT || 5000);
+
+var CronJob = require('cron').CronJob;
+var scraper = require('./scraper');
 
 app.get('/', function(req, res) 
 {
-	Listing.find({}).sort("-datePlayed").exec(function(err, listings)
+	scraper.retrieveRecent(function(err, listing)
 	{
 		res.render('layout', 
-			{ listings: listings }
+			{ listings: listing }
 			);
-	});
+	})
 });
 
 app.listen(port);
 console.log("Server has started on port: " + port + "!");
+
+process.on('SIGTERM', function () {
+	scraper.disconnect();
+  	app.close();
+});
+
+var job = new CronJob('5 * * * * *', function() {
+	scraper.update();	
+}, null, true)

@@ -3,7 +3,6 @@
 
 // This is the URL for MongoLAB.
 var databaseURL = "mongodb://Imvoo:imvoo@ds049467.mongolab.com:49467/imvoo";
-
 var collection = 'listings';
 
 var cheerio = require('cheerio'),
@@ -21,81 +20,96 @@ var ranksRegex = /\w*(?=\))/;
 var ranks;
 var mods;
 
-mongoose.connect(databaseURL);
 var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String, rank: String, songMods: String });
+mongoose.connect(databaseURL);
 
-async.series([
-	function(callback)
-	{
-		console.log("Starting recording function!"); // DEBUG
-		request(url, function (error, response, html) 
+exports.disconnect = function() {
+	mongoose.disconnect();
+}
+
+exports.retrieveRecent = function(cb) {
+	return Listing.find({}).sort("-datePlayed").exec(cb);
+}
+
+exports.update = function() { 
+	async.series([
+		function(callback)
 		{
-			var count = 0;
-			if (!error && response.statusCode == 200) 
+			console.log("Starting recording function!"); // DEBUG
+			request(url, function (error, response, html) 
 			{
-				console.log("Found page to record!"); // DEBUG
-				Listing.findOne({}).sort("-datePlayed").exec(function(err, result) {
-					if (result != null)
-						console.log(result.datePlayed + " " + result.songName);
-
-					var $ = cheerio.load(html);
-					console.log("Loaded HTML with Cheerio!"); // DEBUG
-
-					if ($('time.timeago').length == 0)
-					{
-						console.log("No songs to record!");
-						callback();
-					}
-
-					$('time.timeago').each(function(i, element) 
-					{
-						var date = this.text();
-						if (result != null && (moment(date).isBefore(result.datePlayed) || moment(date).isSame(result.datePlayed)))
+				var count = 0;
+				if (!error && response.statusCode == 200) 
+				{
+					console.log("Found page to record!"); // DEBUG
+					Listing.findOne({}).sort("-datePlayed").exec(function(err, result) {
+						if (err)
 						{
-							count++;
-							console.log("Already recorded, skipping!");
-							console.log(moment(date).diff(result.datePlayed));
-
-							if ($('time.timeago').length == count)
-								callback();
-							return;
+							console.log("Error in retrieving recent listing for saving entries!");
+							callback();
 						}
 
-						var amount = $('time.timeago').length;
-						var nextTag = this.next().text();
-						var name = nextTag.substr(0, nextTag.indexOf('[') - 1);
-						var difficulty = nextTag.substr(nextTag.indexOf('[') + 1, nextTag.length - nextTag.indexOf('[') - 2);
-						var link = "http://osu.ppy.sh" + this.next().attr('href');
+						if (result != null)
+							console.log(result.datePlayed + " " + result.songName);
 
-						allScores = allScoresRegex.exec(html);
-						scores = scoresRegex.exec(allScores);
-						ranks = ranksRegex.exec(allScores);
-						mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
+						var $ = cheerio.load(html);
+						console.log("Loaded HTML with Cheerio!"); // DEBUG
 
-						console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
-
-						var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
-						newSong.save(function (err) 
+						if ($('time.timeago').length == 0)
 						{
-							count++;
-							if (err)
-								console.log("Error in saving!");
-							else
-								console.log("Saved entry!");
+							console.log("No songs to record!");
+							callback();
+						}
 
-							if ($('time.timeago').length == count)
-								callback();
+						$('time.timeago').each(function(i, element) 
+						{
+							var date = this.text();
+							if (result != null && (moment(date).isBefore(result.datePlayed) || moment(date).isSame(result.datePlayed)))
+							{
+								count++;
+								console.log("Already recorded, skipping!");
+								console.log(moment(date).diff(result.datePlayed));
+
+								if ($('time.timeago').length == count)
+									callback();
+								return;
+							}
+
+							var amount = $('time.timeago').length;
+							var nextTag = this.next().text();
+							var name = nextTag.substr(0, nextTag.indexOf('[') - 1);
+							var difficulty = nextTag.substr(nextTag.indexOf('[') + 1, nextTag.length - nextTag.indexOf('[') - 2);
+							var link = "http://osu.ppy.sh" + this.next().attr('href');
+
+							allScores = allScoresRegex.exec(html);
+							scores = scoresRegex.exec(allScores);
+							ranks = ranksRegex.exec(allScores);
+							mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
+
+							console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
+
+							var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
+							newSong.save(function (err) 
+							{
+								count++;
+								if (err)
+									console.log("Error in saving!");
+								else
+									console.log("Saved entry!");
+
+								if ($('time.timeago').length == count)
+									callback();
+							});
 						});
 					});
-				});
-			}
-		})
-	},
+				}
+			})
+		},
 
-	function(callback)
-	{
-		mongoose.disconnect();
-		console.log("Disconnected!");
-		callback();
-	}
-])
+		function(callback)
+		{
+			console.log("Finished recording entries!");
+			callback();
+		}
+	])
+}
