@@ -13,12 +13,8 @@ var cheerio = require('cheerio'),
 
 var url = "http://osu.ppy.sh/pages/include/profile-history.php?u=949789&m=0";
 var allScoresRegex = /(\d*,?){0,4} \(\w*\) (\w*,?){0,5}/g;
-var allScores;
 var scoresRegex = /^(\d*,?){0,4}/;
-var scores;
 var ranksRegex = /\w*(?=\))/;
-var ranks;
-var mods;
 
 var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String, rank: String, songMods: String });
 mongoose.connect(databaseURL);
@@ -35,6 +31,11 @@ exports.update = function() {
 	async.series([
 		function(callback)
 		{
+			var allScores;
+			var scores;
+			var ranks;
+			var mods;
+
 			// console.log("Starting recording function!"); // DEBUG
 			request(url, function (error, response, html) 
 			{
@@ -57,7 +58,7 @@ exports.update = function() {
 
 						if ($('time.timeago').length == 0)
 						{
-							// console.log("No songs to record!");
+							console.log("No songs to record!");
 							callback();
 						}
 
@@ -82,11 +83,11 @@ exports.update = function() {
 							var link = "http://osu.ppy.sh" + this.next().attr('href');
 
 							allScores = allScoresRegex.exec(html);
-							scores = scoresRegex.exec(allScores);
-							ranks = ranksRegex.exec(allScores);
+							scores = scoresRegex.exec(allScores[0]);
+							ranks = ranksRegex.exec(allScores[0]);
 							mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
 
-							// console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
+							console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
 
 							var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
 							newSong.save(function (err) 
@@ -108,7 +109,7 @@ exports.update = function() {
 
 		function(callback)
 		{
-			// console.log("Finished recording entries!");
+			console.log("Finished recording entries!");
 			callback();
 		}
 	])

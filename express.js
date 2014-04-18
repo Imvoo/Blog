@@ -28,6 +28,6 @@ process.on('SIGTERM', function () {
 	scraper.disconnect();
 });
 
-var job = new CronJob('5 * * * * *', function() {
+var job = new CronJob('1 * * * * *', function() {
 	scraper.update();	
 }, null, true)
