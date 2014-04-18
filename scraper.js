@@ -109,7 +109,7 @@ exports.update = function() {
 
 		function(callback)
 		{
-			console.log("Finished recording entries!");
+			// console.log("Finished recording entries!");
 			callback();
 		}
 	])
