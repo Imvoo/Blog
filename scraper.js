@@ -104,6 +104,11 @@ exports.update = function() {
 						});
 					});
 				}
+				else
+				{
+					console.log("Error getting page!");
+					callback();
+				}
 			})
 		},
 
