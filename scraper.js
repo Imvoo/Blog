@@ -40,6 +40,9 @@ exports.update = function() {
 			request(url, function (error, response, html) 
 			{
 				var count = 0;
+
+				allScores = html.match(allScoresRegex);
+
 				if (!error && response.statusCode == 200) 
 				{
 					// console.log("Found page to record!"); // DEBUG
@@ -82,12 +85,11 @@ exports.update = function() {
 							var difficulty = nextTag.substr(nextTag.indexOf('[') + 1, nextTag.length - nextTag.indexOf('[') - 2);
 							var link = "http://osu.ppy.sh" + this.next().attr('href');
 
-							allScores = allScoresRegex.exec(html);
-							scores = scoresRegex.exec(allScores[0]);
-							ranks = ranksRegex.exec(allScores[0]);
-							mods = allScores[0].substring(allScores[0].lastIndexOf(' ') + 1);
+							scores = allScores[i].match(scoresRegex);
+							ranks = allScores[i].match(ranksRegex);
+							mods = allScores[i].substring(allScores[i].lastIndexOf(' ') + 1);
 
-							console.log("Preparing to record: " + name + " " + allScores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
+							console.log("Preparing to record: " + name + " " + scores[0] + " " + ranks[0] + " on " + difficulty + " difficulty with these mods: " + mods);
 
 							var newSong = new Listing({ datePlayed: date, songName: name, songLink: link, songDifficulty: difficulty, score: scores[0], rank: ranks[0], songMods: mods });
 							newSong.save(function (err) 
