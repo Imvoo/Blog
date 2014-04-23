@@ -1,6 +1,8 @@
 var express = require('express');
 
 var app = express();
+app.use(express.compress());
+
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/public/jade');
 app.use(express.static(__dirname + '/public'));
