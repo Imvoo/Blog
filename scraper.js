@@ -16,6 +16,8 @@ var allScoresRegex = /(\d*,?){0,4} \(\w*\) (\w*,?){0,5}/g;
 var scoresRegex = /^(\d*,?){0,4}/;
 var ranksRegex = /\w*(?=\))/;
 
+var emptySongsList = false;
+
 var Listing = mongoose.model(collection, { datePlayed: Date, songName: String, songLink: String, songDifficulty: String, score: String, rank: String, songMods: String });
 mongoose.connect(databaseURL);
 
@@ -61,7 +63,12 @@ exports.update = function() {
 
 						if ($('time.timeago').length == 0)
 						{
-							console.log("No songs to record!");
+							if (!emptySongsList)
+							{
+								console.log("No songs to record!");
+								emptySongsList == true;
+							}
+							
 							callback();
 						}
 
