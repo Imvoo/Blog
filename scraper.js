@@ -71,6 +71,8 @@ exports.update = function() {
 
 							callback();
 						}
+						else
+							haveLoggedEmpty = false;
 
 						$('time.timeago').each(function(i, element) 
 						{
