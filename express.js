@@ -11,15 +11,22 @@ var port = Number(process.env.PORT || 5000);
 
 var CronJob = require('cron').CronJob;
 var scraper = require('./scraper');
+var retriever = require('./retriever');
+var user = "Imvoo";
 
 app.get('/', function(req, res) 
 {
-	scraper.retrieveRecent(function(err, listing)
-	{
-		res.render('layout', 
-			{ listings: listing }
-			);
-	})
+	retriever.getAvatar(user, function() {
+		scraper.retrieveRecent(function(err, listings)
+		{
+			res.render('layout', 
+				{ 
+					listings: listings,
+				  	userAvatar: userAvatar,
+				  	user: user
+				})
+		})
+	});
 });
 
 app.listen(port);

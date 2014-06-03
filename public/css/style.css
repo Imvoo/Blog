@@ -8,6 +8,10 @@ html, body {
 	position: relative;
 }
 
+header {
+	text-align: center;
+}
+
 #body {
 	padding-bottom: 50px;
 }
