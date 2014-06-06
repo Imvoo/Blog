@@ -35,6 +35,6 @@ process.on('SIGTERM', function () {
 	retriever.disconnect();
 });
 
-var job = new CronJob('1 * * * * *', function() {
+var job = new CronJob('5 * * * * *', function() {
 	retriever.update();	
 }, null, true)
