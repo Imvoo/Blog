@@ -1,4 +1,4 @@
-OsuUserScraper
+Osu Score Retriever
 ==============
 
 This is my implementation of a score retriever which will visit the Osu! website and retrieve my recently played games, presenting the results in a neat table format.
