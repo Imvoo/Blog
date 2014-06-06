@@ -10,14 +10,13 @@ app.use(express.static(__dirname + '/public'));
 var port = Number(process.env.PORT || 5000);
 
 var CronJob = require('cron').CronJob;
-var scraper = require('./scraper');
 var retriever = require('./retriever');
-var user = "Imvoo";
+var user = "949789";
 
 app.get('/', function(req, res) 
 {
 	retriever.getAvatar(user, function() {
-		scraper.retrieveRecent(function(err, listings)
+		retriever.retrieveRecent(function(err, listings)
 		{
 			res.render('layout', 
 				{ 
@@ -33,9 +32,9 @@ app.listen(port);
 console.log("Server has started on port: " + port + "!");
 
 process.on('SIGTERM', function () {
-	scraper.disconnect();
+	retriever.disconnect();
 });
 
 var job = new CronJob('1 * * * * *', function() {
-	scraper.update();	
+	retriever.update();	
 }, null, true)
