@@ -58,7 +58,7 @@ exports.retrieveRecent = function(cb) {
 //	It does this currently by grabbing the Recently Played (last 24 hours)
 //	songs off the Osu! page every 5 minutes.
 exports.update = function() {
-	
+
 	// 	Handles the score aspect of the entries, as the scores
 	//	in the HTML page are not enclosed off with any div tags or any tags
 	//	at all, so Regex is used to handle them.
@@ -92,8 +92,7 @@ exports.update = function() {
 
 				if (result == null)
 				{
-					console.log("Error grabbing recent listing: there are no songs
-						to grab!");
+					console.log("Error grabbing recent listing: there are no songs to grab!");
 					console.log("Continuing on by recording all songs!");
 					result = new Listing({ datePlayed: 0 });
 				}
