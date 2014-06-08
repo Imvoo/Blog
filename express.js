@@ -52,6 +52,6 @@ process.on('SIGTERM', function () {
 });
 
 //	This handles the updating of database entries with a delay set.
-var job = new CronJob('* ' + retrieverDelay + ' * * * *', function() {
+var job = new CronJob('0 */' + retrieverDelay + ' * * * *', function() {
 	retriever.update();	
 }, null, true)
